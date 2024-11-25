@@ -1,0 +1,35 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/farm-crm
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    networks:
+      - farm_crm
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: farm-crm
+    volumes:
+      - farm-crm_data:/var/lib/postgresql/data
+    networks:
+      - farm_crm
+
+volumes:
+  farm-crm_data:
+networks:
+  farm_crm:
+    driver: bridge
